@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#3d092a">
+<title>For Sadika, With All My Love ♥</title>
+<style>
+/* ============================================================
+   FOR SADIKA — a self-contained romantic mini website
+   No external libraries, images, or fonts are required.
+   ============================================================ */
+:root{
+  --rose:#ff477e;--pink:#ff9db9;--wine:#6f153f;--cream:#fff7ef;
+  --ink:#321427;--gold:#ffd789;--glass:rgba(255,255,255,.13);
+  --line:rgba(255,255,255,.25);--shadow:0 22px 70px rgba(37,0,24,.24)
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;min-height:100vh;font-family:Georgia,'Times New Roman',serif;color:#fff;background:#27071e;overflow-x:hidden}
+button,a{font:inherit}
+button{cursor:pointer}
+button:focus-visible,a:focus-visible{outline:3px solid #ffe6a2;outline-offset:4px}
+button:disabled{opacity:.45;cursor:not-allowed}
+#rain,#petal-layer,#burst-layer{position:fixed;inset:0;pointer-events:none;overflow:hidden}
+#rain{z-index:2;opacity:.53}
+#petal-layer{z-index:3}
+#burst-layer{z-index:30}
+.drop{position:absolute;top:-15vh;width:2px;height:45px;border-radius:100%;background:linear-gradient(transparent,rgba(220,244,255,.72));filter:blur(.3px);animation:rainFall linear infinite}
+@keyframes rainFall{to{transform:translate3d(50px,120vh,0)}}
+.petal{position:absolute;top:-9vh;width:18px;height:25px;border-radius:100% 0 100% 0;background:linear-gradient(145deg,#ffd4e1,#ef3470 65%,#9a1248);box-shadow:0 4px 12px #6a0c3a33;animation:petalFall linear forwards}
+@keyframes petalFall{0%{transform:translate3d(0,-5vh,0) rotate(0deg);opacity:0}10%{opacity:1}100%{transform:translate3d(var(--drift),115vh,0) rotate(680deg);opacity:.05}}
+.floating-heart{position:fixed;bottom:-50px;z-index:4;pointer-events:none;animation:floatUp var(--dur) linear forwards;filter:drop-shadow(0 4px 12px #ff3d8240)}
+@keyframes floatUp{to{transform:translateY(-115vh) rotate(28deg);opacity:0}}
+.site-header{position:fixed;z-index:50;top:0;left:0;right:0;padding:15px clamp(14px,4vw,45px);display:flex;align-items:center;justify-content:space-between;gap:16px;background:linear-gradient(180deg,rgba(21,3,19,.46),transparent);pointer-events:none}
+.brand{font:700 12px/1.2 Arial,sans-serif;letter-spacing:.22em;text-transform:uppercase;text-shadow:0 2px 10px #280017}
+.brand span{color:#ffc1d1}
+.step-pill{border:1px solid #ffffff4a;border-radius:999px;padding:8px 13px;font:12px Arial,sans-serif;letter-spacing:.06em;background:#ffffff12;backdrop-filter:blur(12px)}
+.progress-wrap{position:fixed;z-index:51;top:0;left:0;width:100%;height:3px;background:#ffffff16}
+.progress-bar{height:100%;width:0;background:linear-gradient(90deg,#ffb0c9,#ffd98a);box-shadow:0 0 16px #ff80a9;transition:width .7s ease}
+#app{position:relative;z-index:5;min-height:100vh}
+.scene{display:none;position:relative;min-height:100svh;width:100%;padding:100px 18px 54px;align-items:center;justify-content:center;text-align:center;overflow:hidden;isolation:isolate}
+.scene.active{display:flex;animation:sceneReveal .85s cubic-bezier(.2,.75,.25,1) both}
+@keyframes sceneReveal{from{opacity:0;transform:scale(1.025) translateY(12px);filter:blur(5px)}to{opacity:1;transform:scale(1) translateY(0);filter:blur(0)}}
+.scene::before{content:"";position:absolute;inset:0;z-index:-2;background:radial-gradient(circle at 15% 18%,#ff94ba38,transparent 35%),radial-gradient(circle at 84% 75%,#ffba9c24,transparent 33%)}
+.scene::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;opacity:.22;background-image:radial-gradient(#fff 0.7px,transparent .8px);background-size:31px 31px;mask-image:linear-gradient(transparent,#000 25%,#000 75%,transparent)}
+.scene-inner{width:min(100%,900px);margin:auto;position:relative}
+.scene-kicker{font:700 11px/1.4 Arial,sans-serif;text-transform:uppercase;letter-spacing:.24em;color:#ffd7e3;margin:0 0 14px}
+h1,h2,h3,p{margin-top:0}
+h1{font-size:clamp(2.6rem,8vw,6rem);line-height:.98;letter-spacing:-.045em;margin-bottom:22px;font-weight:normal;text-wrap:balance}
+h2{font-size:clamp(2rem,5.5vw,4rem);line-height:1.05;font-weight:normal;letter-spacing:-.035em;margin-bottom:16px;text-wrap:balance}
+h3{font-size:clamp(1.25rem,3vw,1.8rem);font-weight:normal}
+p{line-height:1.7}
+.lead{font-size:clamp(1rem,2.3vw,1.28rem);line-height:1.8;max-width:650px;margin:0 auto 27px;color:#fff0f5}
+.italic{font-style:italic;color:#ffe1ea}
+.gold{color:#ffdf9f}
+.pink{color:#ffb3ca}
+.tiny-note{font:12px/1.7 Arial,sans-serif;color:#ffffffae;max-width:520px;margin:22px auto 0}
+.eyebrow-line{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:22px;color:#ffd4e1;font-size:12px;letter-spacing:.18em;text-transform:uppercase}
+.eyebrow-line:before,.eyebrow-line:after{content:"";height:1px;width:35px;background:#ffd4e17a}
+/* Scene-specific cinematic palettes */
+#intro{background:radial-gradient(ellipse at 50% 15%,#762347,#310c2d 46%,#110c25 100%)}
+#q1{background:radial-gradient(ellipse at 18% 15%,#f493b4,#a42e63 42%,#461338 100%)}
+#q2{background:radial-gradient(ellipse at 80% 12%,#ffdba0,#9a4a55 40%,#311127 100%)}
+#win1{background:radial-gradient(ellipse at 50% 15%,#4e9f79,#14534b 47%,#092e3b 100%)}
+#wrong1{background:radial-gradient(ellipse at 50% 15%,#777285,#393346 45%,#1c1a2e 100%)}
+#win2{background:radial-gradient(ellipse at 50% 15%,#d6a64f,#8d3b4d 50%,#32132d 100%)}
+#wrong2{background:radial-gradient(ellipse at 50% 15%,#887d83,#47323e 50%,#211a2a 100%)}
+#roses{background:radial-gradient(ellipse at 10% 15%,#ffb8cf,#ad3e72 42%,#39122f 100%)}
+#heartgame{background:radial-gradient(ellipse at 50% 0%,#762b73,#29194f 50%,#10132f 100%)}
+#wheel{background:radial-gradient(ellipse at 50% 10%,#513b9d,#201a56 47%,#110d2b 100%)}
+#letterbox{background:radial-gradient(ellipse at 50% 10%,#b87672,#77324e 40%,#251330 100%)}
+#finale{background:radial-gradient(ellipse at 50% 25%,#b82864,#551344 43%,#160b25 100%)}
+/* Glass cards */
+.glass-card{width:min(100%,650px);margin:0 auto;padding:clamp(24px,5vw,44px);border-radius:28px;border:1px solid #ffffff40;background:linear-gradient(145deg,#ffffff21,#ffffff08);box-shadow:var(--shadow),inset 0 1px #ffffff24;backdrop-filter:blur(17px);position:relative;overflow:hidden}
+.glass-card:before{content:"";position:absolute;width:200px;height:200px;top:-110px;right:-80px;border-radius:50%;background:#ffffff13;filter:blur(3px);pointer-events:none}
+/* Buttons */
+.btn-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:24px}
+.btn{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:50px;padding:14px 23px;border-radius:999px;border:1px solid transparent;background:linear-gradient(120deg,#ff8aaa,#ff4f83);color:#371027;font:700 13px Arial,sans-serif;letter-spacing:.03em;text-decoration:none;box-shadow:0 9px 24px #ff3d7840,inset 0 1px #ffffff8c;transition:transform .25s,box-shadow .25s,filter .25s;overflow:hidden}
+.btn:before{content:"";position:absolute;inset:0;transform:translateX(-120%);background:linear-gradient(100deg,transparent,#ffffff72,transparent);transition:transform .7s}
+.btn:hover{transform:translateY(-3px) scale(1.02);box-shadow:0 14px 34px #ff3d7866;filter:saturate(1.1)}
+.btn:hover:before{transform:translateX(120%)}
+.btn.secondary{color:#fff;background:#ffffff12;border-color:#ffffff58;box-shadow:none;backdrop-filter:blur(9px)}
+.btn.gold-btn{background:linear-gradient(120deg,#ffe6a4,#f9b95f);color:#482038;box-shadow:0 9px 25px #ffdb8a35}
+.btn.small{min-height:42px;padding:11px 17px;font-size:12px}
+/* Intro accents */
+.orbit{width:clamp(150px,31vw,250px);aspect-ratio:1;margin:0 auto 26px;position:relative;display:grid;place-items:center;animation:slowFloat 5s ease-in-out infinite}
+.orbit:before,.orbit:after{content:"";position:absolute;inset:0;border:1px solid #ffffff55;border-radius:50%;transform:rotate(-24deg) scaleY(.36)}
+.orbit:after{transform:rotate(65deg) scaleY(.36);border-color:#ffb7cd80}
+.orbit-core{width:61%;height:61%;border-radius:50%;display:grid;place-items:center;font-size:clamp(4rem,11vw,7rem);background:radial-gradient(circle at 35% 28%,#fff9e8,#ffb0ca 48%,#ad245d 80%);box-shadow:0 0 65px #ff73ae76,inset 0 0 25px #ffffffad;animation:heartBeat 2.2s ease-in-out infinite}
+@keyframes slowFloat{50%{transform:translateY(-9px) rotate(2deg)}}
+@keyframes heartBeat{0%,100%{transform:scale(1)}15%{transform:scale(1.07)}28%{transform:scale(1)}42%{transform:scale(1.04)}}
+.sparkle{position:absolute;font-size:20px;animation:sparkle 2.7s ease-in-out infinite}
+.sparkle.s1{top:7%;left:4%}.sparkle.s2{bottom:12%;right:3%;animation-delay:.8s}.sparkle.s3{top:17%;right:5%;animation-delay:1.4s}
+@keyframes sparkle{0%,100%{transform:scale(.7) rotate(0);opacity:.45}50%{transform:scale(1.25) rotate(25deg);opacity:1}}
+/* Answers */
+.answer-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;margin:28px auto 0;max-width:540px}
+.answer{display:flex;align-items:center;gap:13px;text-align:left;min-height:76px;padding:16px 18px;border:1px solid #ffffff4b;border-radius:18px;background:#ffffff12;color:white;transition:transform .23s,background .23s,border .23s;backdrop-filter:blur(10px)}
+.answer:hover{transform:translateY(-4px);background:#ffffff26;border-color:#ffffffb3}
+.answer-letter{width:36px;height:36px;flex:0 0 36px;display:grid;place-items:center;border-radius:50%;font:700 13px Arial,sans-serif;color:#522039;background:linear-gradient(135deg,#ffe7b4,#ff92b6);box-shadow:0 5px 16px #20001f30}
+.answer-text{font-size:clamp(1rem,2vw,1.2rem)}
+/* Animated rose reward */
+.rose-emblem{font-size:clamp(5rem,17vw,9rem);display:inline-block;filter:drop-shadow(0 15px 25px #ff4f7d40);animation:roseBloom 1.5s cubic-bezier(.18,.89,.32,1.28) both,slowFloat 4s 1.5s ease-in-out infinite}
+@keyframes roseBloom{from{transform:scale(.1) rotate(-80deg);filter:blur(8px);opacity:0}to{transform:scale(1) rotate(0);filter:blur(0);opacity:1}}
+/* Chosen roses */
+.rose-options{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;max-width:760px;margin:27px auto 0}
+.rose-choice{min-height:180px;border:1px solid #ffffff50;background:#ffffff13;border-radius:22px;color:#fff;padding:18px 10px;backdrop-filter:blur(10px);transition:transform .3s,background .3s;position:relative;overflow:hidden}
+.rose-choice:hover{transform:translateY(-8px) rotate(-1deg);background:#ffffff27}
+.rose-choice .rose-icon{display:block;font-size:clamp(2.8rem,7vw,4.4rem);margin-bottom:12px;filter:drop-shadow(0 9px 13px #30002355);transition:transform .35s}
+.rose-choice:hover .rose-icon{transform:scale(1.18) rotate(9deg)}
+.rose-choice strong{display:block;font-size:1.02rem;font-weight:normal}
+.rose-choice small{display:block;margin-top:7px;font:10px Arial,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#ffe5efad}
+#rose-reveal{margin:22px auto 0;max-width:620px;min-height:0}
+#rose-reveal:not(:empty){padding:18px 22px;border-radius:18px;background:#ffffff12;border:1px solid #ffffff35;animation:revealUp .5s ease both}
+@keyframes revealUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+/* heart game */
+.heart-meter{width:min(100%,450px);height:14px;border-radius:999px;margin:23px auto 18px;background:#ffffff25;overflow:hidden;border:1px solid #ffffff27}
+.heart-meter-fill{height:100%;width:0;background:linear-gradient(90deg,#fa85c0,#ffdf9a);border-radius:999px;box-shadow:0 0 18px #ff7fb1;transition:width .45s cubic-bezier(.2,.8,.2,1)}
+.heart-tap{width:clamp(115px,30vw,165px);aspect-ratio:1;border:none;border-radius:50%;font-size:clamp(3.5rem,10vw,5.2rem);background:radial-gradient(circle at 35% 25%,#fff0f6,#ff73a7 55%,#c32170);box-shadow:0 0 0 12px #ffffff0b,0 0 55px #ff50a45c,inset 0 -10px 20px #710d4c33;transition:transform .14s;animation:heartBeat 1.8s infinite}
+.heart-tap:active{transform:scale(.88)}
+.count-label{font:12px Arial,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#fbd9e8}
+/* Wheel */
+.wheel-layout{display:grid;grid-template-columns:minmax(240px,400px) minmax(230px,1fr);align-items:center;gap:clamp(22px,5vw,55px);margin-top:26px;text-align:left}
+.wheel-frame{width:min(100%,390px);margin:auto;position:relative;filter:drop-shadow(0 18px 35px #07051c85)}
+.wheel-frame:before{content:"";position:absolute;z-index:3;top:-9px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:17px solid transparent;border-right:17px solid transparent;border-top:37px solid #ffe6a4;filter:drop-shadow(0 3px 3px #120a2c80)}
+#wheel-canvas{width:100%;display:block;border-radius:50%;border:7px solid #ffe1a0;box-shadow:0 0 0 4px #ffffff28,inset 0 0 12px #110b35;transition:transform 5.1s cubic-bezier(.12,.7,.1,1)}
+.wheel-center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:18%;aspect-ratio:1;display:grid;place-items:center;border-radius:50%;background:radial-gradient(circle at 35% 25%,#fff1c3,#ffb1d0 50%,#8b317a);border:4px solid #fff1c5;font-size:clamp(1.2rem,3vw,2rem);box-shadow:0 0 22px #ffdb9c85;pointer-events:none}
+.wheel-side h3{color:#ffe2a4;font-style:italic}
+.wheel-side p{color:#f3edffcf;font-size:14px}
+.result-number{font-size:clamp(3rem,8vw,5rem);line-height:1;margin:13px 0;color:#ffe3a1;text-shadow:0 0 35px #ffd57c50}
+/* WhatsApp page */
+.chat-icon{width:90px;height:90px;border-radius:50%;margin:0 auto 23px;display:grid;place-items:center;background:linear-gradient(145deg,#9af0bd,#2bbd77);font-size:3.4rem;box-shadow:0 0 45px #48d89144;animation:slowFloat 4s ease-in-out infinite}
+/* 3D letter box */
+.mailbox-stage{perspective:1000px;width:min(100%,520px);height:315px;margin:15px auto 12px;position:relative;display:grid;place-items:center;cursor:pointer;outline:none}
+.mailbox{width:min(86%,400px);height:185px;position:relative;transform-style:preserve-3d;transform:rotateX(7deg);filter:drop-shadow(0 24px 20px #1d071c60);transition:transform .5s}
+.mailbox-stage:hover .mailbox{transform:rotateX(3deg) translateY(-5px)}
+.box-base{position:absolute;inset:40px 0 0;background:linear-gradient(135deg,#e5a16f,#a7445d 55%,#692548);border:2px solid #ffdfb46b;border-radius:8px 8px 15px 15px;transform:translateZ(15px);box-shadow:inset 0 -15px 24px #4c173f4a,inset 0 4px #ffe4b377}
+.box-base:before{content:"FOR MY DEAREST SADIKA";position:absolute;left:0;right:0;top:76px;font:700 10px Arial,sans-serif;letter-spacing:.19em;color:#ffeac7;text-shadow:0 2px 4px #5a1739;text-align:center}
+.box-front{position:absolute;left:0;right:0;bottom:-1px;height:80px;background:linear-gradient(160deg,#c67170,#743052);border:2px solid #ffdfb44d;border-radius:0 0 13px 13px;transform:translateZ(36px) rotateX(-5deg);transform-origin:top;box-shadow:inset 0 -8px 15px #4d123c42}
+.box-lid{position:absolute;left:-2px;right:-2px;top:24px;height:65px;border:2px solid #ffdfb47a;border-radius:8px 8px 2px 2px;background:linear-gradient(150deg,#ffd09b,#d87683 55%,#9b3b63);transform-origin:top center;transform:translateZ(18px) rotateX(0deg);transition:transform 1s cubic-bezier(.2,.75,.25,1);box-shadow:inset 0 5px #ffffff55}
+.box-lid:after{content:"♥";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:26px;color:#fff1cc;text-shadow:0 2px 8px #682241}
+.box-ribbon{position:absolute;z-index:5;top:48px;left:calc(50% - 15px);bottom:0;width:30px;background:linear-gradient(90deg,#fff0c5,#ffcf88,#ffe8b7);transform:translateZ(42px);box-shadow:0 0 10px #46123421}
+.box-bow{position:absolute;z-index:6;top:28px;left:50%;transform:translateZ(45px) translateX(-50%);width:95px;height:42px}
+.box-bow:before,.box-bow:after{content:"";position:absolute;top:3px;width:42px;height:28px;border:7px solid #ffefcb;border-radius:70% 20% 70% 20%;box-shadow:0 2px 5px #6a244344}
+.box-bow:before{left:3px;transform:rotate(22deg)}.box-bow:after{right:3px;transform:scaleX(-1) rotate(22deg)}
+.letter-paper{position:absolute;z-index:2;left:6%;right:6%;top:12px;height:220px;background:linear-gradient(#fffaf0,#ffe7d9);color:#6a2645;border-radius:5px;padding:22px 17px;box-shadow:0 8px 25px #18071d50;transform:translateY(100px) translateZ(-5px) rotateX(5deg);opacity:0;transition:transform 1.2s cubic-bezier(.18,.8,.18,1),opacity .6s;pointer-events:none;font-size:1.6rem}
+.letter-paper span{display:block;font-size:.65rem;font-style:italic;line-height:1.6;margin-top:4px}
+.mailbox-stage.opened .box-lid{transform:translateZ(18px) rotateX(145deg)}
+.mailbox-stage.opened .letter-paper{transform:translateY(-68px) translateZ(65px) rotateX(0);opacity:1}
+.mailbox-stage.opened .box-bow{opacity:.2;transition:opacity .5s}
+.letter-instruction{font:12px Arial,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#ffe3ebc9;animation:softPulse 2s infinite}
+@keyframes softPulse{50%{opacity:.55}}
+.letter-content{display:none;text-align:left;margin:18px auto 0;max-width:780px;padding:clamp(23px,5vw,48px);border-radius:22px;background:linear-gradient(145deg,#fff9f0,#ffebdd);color:#672c46;box-shadow:0 22px 70px #1a061d66;animation:revealUp .9s ease both}
+.letter-content.visible{display:block}
+.letter-content .letter-dear{font-size:clamp(1.25rem,3vw,1.7rem);font-style:italic;color:#a23960}
+.letter-content p{font-size:clamp(.97rem,1.8vw,1.08rem);line-height:1.9;margin-bottom:16px}
+.letter-sign{font-size:1.4rem!important;font-style:italic;color:#aa315e;text-align:right;margin:20px 0 0!important}
+/* Finale */
+.final-ring{width:clamp(160px,34vw,265px);aspect-ratio:1;margin:0 auto 28px;position:relative;border-radius:50%;border:1px solid #ffd3df94;display:grid;place-items:center;box-shadow:0 0 70px #ff5c9d35,inset 0 0 35px #ffffff10;animation:slowFloat 5s infinite}
+.final-ring:before,.final-ring:after{content:"";position:absolute;inset:12px;border:1px dashed #ffd5df5c;border-radius:50%;animation:rotate 28s linear infinite}
+.final-ring:after{inset:-12px;border-style:solid;border-color:#ffb9cc42;animation-direction:reverse;animation-duration:35s}
+@keyframes rotate{to{transform:rotate(360deg)}}
+.final-heart{font-size:clamp(5rem,12vw,7.5rem);filter:drop-shadow(0 0 30px #ffabc9a3);animation:heartBeat 1.4s infinite}
+.final-quote{font-size:clamp(1.15rem,3vw,1.75rem);line-height:1.65;max-width:780px;margin:15px auto 25px;font-style:italic;text-wrap:balance}
+.signature{margin-top:29px;color:#ffc9d8;font-size:1.1rem;font-style:italic}
+/* Particles */
+.burst-piece{position:absolute;left:var(--x);top:var(--y);font-size:var(--size);animation:burst 1.9s ease-out forwards}
+@keyframes burst{0%{transform:translate(0,0) scale(.3) rotate(0);opacity:0}10%{opacity:1}100%{transform:translate(var(--dx),var(--dy)) scale(1.1) rotate(50deg);opacity:0}}
+footer{margin:25px auto 0;color:#ffffff79;font:10px Arial,sans-serif;letter-spacing:.12em;text-transform:uppercase}
+@media(max-width:650px){
+ .scene{padding:92px 15px 40px;min-height:100svh;align-items:center}
+ .site-header{padding:13px 15px}.brand{font-size:10px;letter-spacing:.15em}.step-pill{font-size:10px;padding:7px 10px}
+ .answer-grid{gap:9px}.answer{padding:13px 11px;min-height:70px;gap:8px}.answer-letter{width:30px;height:30px;flex-basis:30px}
+ .rose-options{gap:7px}.rose-choice{min-height:150px;padding:14px 6px;border-radius:16px}.rose-choice strong{font-size:.92rem}.rose-choice small{font-size:9px;letter-spacing:.05em}
+ .wheel-layout{grid-template-columns:1fr;text-align:center;gap:25px}.wheel-frame{width:min(78vw,330px)}.wheel-side{max-width:500px;margin:auto}.wheel-side p{font-size:13px}
+ .mailbox-stage{height:280px}.mailbox{height:170px}.letter-paper{height:205px}
+ .btn{padding:13px 18px}.glass-card{border-radius:23px}
+}
+@media(max-width:370px){.answer-grid{grid-template-columns:1fr}.answer{min-height:58px}.rose-choice small{font-size:8px}.scene{padding-inline:12px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+<div class="progress-wrap"><div class="progress-bar" id="progress-bar"></div></div>
+<header class="site-header"><div class="brand">A <span>♥</span> S &nbsp; / &nbsp; A LITTLE WORLD FOR SADIKA</div><div class="step-pill" id="step-pill">A LITTLE SURPRISE</div></header>
+<div id="rain" aria-hidden="true"></div><div id="petal-layer" aria-hidden="true"></div><div id="burst-layer" aria-hidden="true"></div>
+<main id="app">
+  <!-- 00 / CINEMATIC INTRO -->
+  <section class="scene active" id="intro" data-step="0">
+    <div class="scene-inner">
+      <div class="orbit" aria-hidden="true"><span class="sparkle s1">✦</span><span class="sparkle s2">✧</span><span class="sparkle s3">♡</span><div class="orbit-core">🌹</div></div>
+      <p class="scene-kicker">A little world made just for you</p>
+      <h1>For you,<br><span class="pink">Sadika.</span></h1>
+      <p class="lead">Somewhere between a smile, a rose, and a thousand little thoughts, you became my favorite person. I made you a tiny adventure. Take my hand and let's begin. ♡</p>
+      <div class="eyebrow-line">Made with love by Abid</div>
+      <div class="btn-row"><button class="btn" onclick="showScene('q1',true)">Enter our little world <span>♡</span></button></div>
+      <p class="tiny-note">Best experienced with sound from your own favorite song, a little patience, and a very soft heart.</p>
+      <footer>Every rose in this little world is for you</footer>
+    </div>
+  </section>
+
+  <!-- 01 / LOVE TEST -->
+  <section class="scene" id="q1" data-step="1">
+    <div class="scene-inner">
+      <p class="scene-kicker">Chapter 01 · The little love test</p>
+      <div class="glass-card">
+        <div style="font-size:2.5rem;margin-bottom:12px">💌</div>
+        <h2>What does Abid<br><span class="gold">like most?</span></h2>
+        <p class="lead" style="font-size:1rem;margin-bottom:5px">Think carefully, Sadika. Your answer is hiding in plain sight.</p>
+        <div class="answer-grid">
+          <button class="answer" onclick="answerFavorite('sadika')"><span class="answer-letter">A</span><span class="answer-text">Sadika 🌹</span></button>
+          <button class="answer" onclick="answerFavorite('icecream')"><span class="answer-letter">B</span><span class="answer-text">Ice cream 🍦</span></button>
+        </div>
+      </div>
+      <p class="tiny-note">Psst... one of these answers is sweeter than the other.</p>
+    </div>
+  </section>
+
+  <!-- 01A / CORRECT LOVE TEST -->
+  <section class="scene" id="win1" data-step="1">
+    <div class="scene-inner">
+      <div class="rose-emblem" aria-hidden="true">🌹</div>
+      <p class="scene-kicker">Correct answer · Rose reward unlocked</p>
+      <h2>You got it,<br><span class="gold">my love!</span></h2>
+      <p class="lead">Abid loves you very much, Sadika. Not just a little. Not just today. <b>Very, very much. ❤️</b></p>
+      <div class="eyebrow-line">One rose, just for you</div>
+      <div class="btn-row"><button class="btn gold-btn" onclick="showScene('q2',true)">Next surprise <span>→</span></button></div>
+    </div>
+  </section>
+
+  <!-- 01B / WRONG LOVE TEST -->
+  <section class="scene" id="wrong1" data-step="1">
+    <div class="scene-inner">
+      <div style="font-size:clamp(5rem,16vw,8rem);filter:drop-shadow(0 10px 22px #15112680);animation:slowFloat 2.5s infinite">🥺</div>
+      <p class="scene-kicker">Oh no · Sad little face alert</p>
+      <h2>Abid hates you,<br><span class="pink">Sadika... 💔</span></h2>
+      <p class="lead">Oh nooo! That was the wrong answer. I'm being dramatic, of course—the quiz is only teasing you. Try once more and win your rose. 🌹</p>
+      <div class="btn-row"><button class="btn" onclick="showScene('q1',true)">Try the love test again ↺</button></div>
+    </div>
+  </section>
+
+  <!-- 02 / BIRTHDAY QUIZ -->
+  <section class="scene" id="q2" data-step="2">
+    <div class="scene-inner">
+      <p class="scene-kicker">Chapter 02 · How well do you know Abid?</p>
+      <div class="glass-card">
+        <div style="font-size:2.8rem;margin-bottom:11px">🎂</div>
+        <h2>When is Abid's<br><span class="gold">birthday?</span></h2>
+        <p class="lead" style="font-size:1rem;margin-bottom:2px">A tiny date, a big test of your memory.</p>
+        <div class="answer-grid">
+          <button class="answer" onclick="answerBirthday(2004)"><span class="answer-letter">A</span><span class="answer-text">2004 🎁</span></button>
+          <button class="answer" onclick="answerBirthday(2005)"><span class="answer-letter">B</span><span class="answer-text">2005 ✨</span></button>
+          <button class="answer" onclick="answerBirthday(2006)"><span class="answer-letter">C</span><span class="answer-text">2006 🎈</span></button>
+          <button class="answer" onclick="answerBirthday(2007)"><span class="answer-letter">D</span><span class="answer-text">2007 🎉</span></button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02A / CORRECT BIRTHDAY -->
+  <section class="scene" id="win2" data-step="2">
+    <div class="scene-inner">
+      <div class="rose-emblem">🌹</div>
+      <p class="scene-kicker">Perfect memory · Another rose for you</p>
+      <h2>That's my girl,<br><span class="gold">Sadika!</span></h2>
+      <p class="lead">You remembered! Abid's birthday is <b>2004</b>. You have earned another rose and a little extra place in my heart. 🎂❤️</p>
+      <div class="btn-row"><button class="btn gold-btn" onclick="showScene('roses',true)">Choose your next rose →</button></div>
+    </div>
+  </section>
+
+  <!-- 02B / INCORRECT BIRTHDAY -->
+  <section class="scene" id="wrong2" data-step="2">
+    <div class="scene-inner">
+      <div style="font-size:clamp(5rem,15vw,7.5rem);animation:slowFloat 2.6s infinite">😔</div>
+      <p class="scene-kicker">A tiny birthday heartbreak</p>
+      <h2>Abid is very<br><span class="gold">disappointed.</span></h2>
+      <p class="lead">Awww, Sadika! You missed this one. Abid's birthday is in 2004. No worries—every love story deserves a second chance. 🌹</p>
+      <div class="btn-row"><button class="btn gold-btn" onclick="showScene('q2',true)">Try the birthday quiz again ↺</button></div>
+    </div>
+  </section>
+
+  <!-- 03 / CHOOSE A ROSE MINI GAME -->
+  <section class="scene" id="roses" data-step="3">
+    <div class="scene-inner">
+      <p class="scene-kicker">Chapter 03 · A bouquet of little feelings</p>
+      <h2>Choose a rose,<br><span class="gold">my favorite girl.</span></h2>
+      <p class="lead">Every rose has a secret note from Abid. Tap the one that calls your name.</p>
+      <div class="rose-options">
+        <button class="rose-choice" onclick="chooseRose(0)"><span class="rose-icon">🌹</span><strong>The Red Rose</strong><small>For true love</small></button>
+        <button class="rose-choice" onclick="chooseRose(1)"><span class="rose-icon">🌷</span><strong>The Pink Rose</strong><small>For tenderness</small></button>
+        <button class="rose-choice" onclick="chooseRose(2)"><span class="rose-icon">💐</span><strong>The Bouquet</strong><small>For forever</small></button>
+      </div>
+      <div id="rose-reveal" aria-live="polite"></div>
+      <div class="btn-row"><button id="rose-next" class="btn gold-btn" onclick="showScene('heartgame',true)" disabled>Unlock the next game →</button></div>
+    </div>
+  </section>
+
+  <!-- 04 / TAP THE HEART GAME -->
+  <section class="scene" id="heartgame" data-step="4">
+    <div class="scene-inner">
+      <p class="scene-kicker">Chapter 04 · Fill the love meter</p>
+      <h2>Can you collect<br><span class="pink">five heartbeats?</span></h2>
+      <p class="lead">Tap the heart five times to fill this little love meter. Every heartbeat comes with a rose just for you. 🌹</p>
+      <div class="heart-meter"><div class="heart-meter-fill" id="heart-meter-fill"></div></div>
+      <p class="count-label" id="heart-count">0 of 5 heartbeats collected</p>
+      <div style="margin:22px auto 10px"><button id="heart-tap" class="heart-tap" onclick="tapHeart()" aria-label="Tap to collect a heartbeat">❤️</button></div>
+      <p id="heart-message" class="lead" style="font-size:1rem;min-height:32px;margin-bottom:0">Tap gently, my love. 💗</p>
+      <div class="btn-row"><button id="heart-next" class="btn gold-btn" onclick="showScene('wheel',true)" disabled>Spin for your lucky number →</button></div>
+    </div>
+  </section>
+
+  <!-- 05 / LUCKY NUMBER WHEEL -->
+  <section class="scene" id="wheel" data-step="5">
+    <div class="scene-inner" style="width:min(100%,1050px)">
+      <p class="scene-kicker">Chapter 05 · Fate is feeling romantic</p>
+      <h2>Spin for your<br><span class="gold">lucky number.</span></h2>
+      <p class="lead" style="margin-bottom:8px">Take a breath, make a little wish, and let the wheel choose one number for you.</p>
+      <div class="wheel-layout">
+        <div class="wheel-frame"><canvas id="wheel-canvas" width="700" height="700" aria-label="Lucky number wheel showing 8, 10, 12, 1, 4, 6, and 16"></canvas><div class="wheel-center">♥</div></div>
+        <div class="wheel-side">
+          <h3>A small spin, a sweet little promise.</h3>
+          <p>The wheel holds seven numbers: 8 · 10 · 12 · 1 · 4 · 6 · 16. Spin once and see which one becomes your lucky number today.</p>
+          <button class="btn gold-btn" id="spin-button" onclick="spinWheel()">✦ Spin the wheel</button>
+          <div id="wheel-result" aria-live="polite" style="margin-top:18px;min-height:115px"></div>
+          <p id="wheel-hint" class="tiny-note" style="margin:10px 0 0;text-align:left">Your number is waiting for you...</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 06 / WHATSAPP LOVE MESSAGE -->
+  <section class="scene" id="whatsapp" data-step="6">
+    <div class="scene-inner">
+      <div class="chat-icon" aria-hidden="true">💬</div>
+      <p class="scene-kicker">Chapter 06 · One little message from your heart</p>
+      <h2>Your lucky number is<br><span class="gold" id="lucky-number-display">—</span></h2>
+      <div class="glass-card" style="margin-top:24px">
+        <h3>Now it's your turn, Sadika. 💌</h3>
+        <p class="lead" style="font-size:1rem">Open WhatsApp and send Abid a little message saying <b>“I love you.”</b> And when we meet, save a sweet kiss for me—only if you feel like it. 😘</p>
+        <button class="btn" onclick="sendWhatsApp()">Send a little love on WhatsApp <span>↗</span></button>
+        <p class="tiny-note">The button opens WhatsApp with a suggested message. You can edit it before you send it.</p>
+      </div>
+      <div class="btn-row"><button class="btn secondary" onclick="showScene('letterbox',true)">There is one more thing for you…</button></div>
+    </div>
+  </section>
+
+  <!-- 07 / 3D LETTER BOX -->
+  <section class="scene" id="letterbox" data-step="7">
+    <div class="scene-inner" style="width:min(100%,900px)">
+      <p class="scene-kicker">Chapter 07 · A letter I kept close to my heart</p>
+      <h2>A little box.<br><span class="gold">A whole lot of love.</span></h2>
+      <p class="lead" style="font-size:1rem;margin-bottom:0">Tap the gift box and let the letter rise. I wrote every word with you in mind.</p>
+      <div class="mailbox-stage" id="mailbox-stage" role="button" tabindex="0" aria-label="Open the 3D letter box" onclick="openLetterBox()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openLetterBox()}">
+        <div class="mailbox">
+          <div class="letter-paper">💌<span>A letter for Sadika<br>open me, my love</span></div>
+          <div class="box-base"></div><div class="box-front"></div><div class="box-lid"></div><div class="box-ribbon"></div><div class="box-bow"></div>
+        </div>
+      </div>
+      <p class="letter-instruction" id="letter-instruction">Tap the box to open your letter ✨</p>
+      <article class="letter-content" id="letter-content">
+        <p class="letter-dear">Dearest Sadika,</p>
+        <p>From the moment you entered my life, everything seems to have taken on a brighter, softer hue. I find myself pausing throughout the day, catching my thoughts wandering back to you—your smile, your warmth, and the gentle way you light up every room you walk into.</p>
+        <p>There is a quiet beauty in the way you exist in the world. You possess a rare kind of charm—one that is both effortlessly magnetic and deeply comforting. Getting to know you, listening to your voice, and sharing moments with you has quickly become my favorite part of any day.</p>
+        <p>You have this remarkable ability to make time slow down, yet somehow, whenever I'm with you or thinking of you, hours feel like mere seconds. I love how genuine you are, how your laughter sounds, and how effortlessly you capture my attention without even trying.</p>
+        <p>I wanted to write this to tell you what has been on my mind: you are truly extraordinary, Sadika. You are a melody I never get tired of hearing and a thought I never want to leave.</p>
+        <p>Thank you for simply being you, and for bringing so much color and magic into my life.</p>
+        <p class="letter-sign">With all my love,<br>Abid ❤️</p>
+      </article>
+      <div class="btn-row"><button id="finale-button" class="btn gold-btn" onclick="showScene('finale',true)" style="display:none">Open the final surprise ♥</button></div>
+    </div>
+  </section>
+
+  <!-- 08 / CINEMATIC FINALE -->
+  <section class="scene" id="finale" data-step="8">
+    <div class="scene-inner">
+      <div class="final-ring"><div class="final-heart">❤️</div></div>
+      <p class="scene-kicker">One last thing, from the deepest part of my heart</p>
+      <h1 style="font-size:clamp(2.5rem,7.5vw,5.5rem)">Always you,<br><span class="gold">Sadika.</span></h1>
+      <p class="final-quote">“No matter how difficult things get in my life, as long as you are by my side, no problem feels like a problem at all. I love you, Sadika.”</p>
+      <div class="eyebrow-line">You are my favorite feeling</div>
+      <p class="lead" style="max-width:600px">If the world gets loud, I hope this little corner reminds you that someone is cheering for you, wishing you happiness, and saving the softest part of his heart for you.</p>
+      <div class="btn-row"><button class="btn" onclick="finalLoveBurst()">Send one last shower of love ✨</button><button class="btn secondary" onclick="restartStory()">Replay our story ↺</button></div>
+      <p class="signature">Forever sending you roses, &nbsp;— Abid 🌹</p>
+      <footer>End of this little page · Never the end of the feeling</footer>
+    </div>
+  </section>
+</main>
+<script>
+/* ------------ small decorative weather + particles ------------ */
+const rainLayer = document.getElementById('rain');
+for(let i=0;i<48;i++){
+  const d=document.createElement('span');d.className='drop';
+  d.style.left=(Math.random()*100)+'%';d.style.animationDuration=(1.5+Math.random()*2.2)+'s';
+  d.style.animationDelay=(-Math.random()*4)+'s';d.style.opacity=(.15+Math.random()*.55).toFixed(2);
+  d.style.height=(22+Math.random()*43)+'px';rainLayer.appendChild(d);
+}
+function makePetals(amount=16){
+  const layer=document.getElementById('petal-layer');
+  for(let i=0;i<amount;i++){
+    const p=document.createElement('span');p.className='petal';p.style.left=(Math.random()*100)+'%';
+    p.style.animationDuration=(5+Math.random()*5)+'s';p.style.animationDelay=(Math.random()*1.4)+'s';
+    p.style.setProperty('--drift',((Math.random()-.5)*250)+'px');p.style.opacity=(.55+Math.random()*.45).toFixed(2);
+    const size=10+Math.random()*15;p.style.width=size+'px';p.style.height=(size*1.35)+'px';layer.appendChild(p);
+    setTimeout(()=>p.remove(),11500);
+  }
+}
+function floatHearts(amount=7){
+  const glyphs=['♥','♡','💗','🌹','✨'];
+  for(let i=0;i<amount;i++){
+    const h=document.createElement('span');h.className='floating-heart';h.textContent=glyphs[Math.floor(Math.random()*glyphs.length)];
+    h.style.left=(Math.random()*100)+'%';h.style.fontSize=(14+Math.random()*25)+'px';h.style.color=['#ffb4cb','#ffe2a4','#fff0f6'][Math.floor(Math.random()*3)];
+    h.style.setProperty('--dur',(5+Math.random()*5)+'s');h.style.animationDelay=(Math.random()*1.1)+'s';document.body.appendChild(h);setTimeout(()=>h.remove(),11500);
+  }
+}
+function loveBurst(amount=35){
+  const layer=document.getElementById('burst-layer');const symbols=['🌹','💗','♥','✨','🌸','💖'];
+  for(let i=0;i<amount;i++){
+    const b=document.createElement('span');b.className='burst-piece';b.textContent=symbols[Math.floor(Math.random()*symbols.length)];
+    b.style.setProperty('--x',(8+Math.random()*84)+'vw');b.style.setProperty('--y',(15+Math.random()*65)+'vh');
+    b.style.setProperty('--dx',((Math.random()-.5)*260)+'px');b.style.setProperty('--dy',((-50-Math.random()*300))+'px');b.style.setProperty('--size',(14+Math.random()*21)+'px');
+    b.style.animationDelay=(Math.random()*.35)+'s';layer.appendChild(b);setTimeout(()=>b.remove(),2500);
+  }
+}
+setInterval(()=>{if(document.visibilityState==='visible')floatHearts(2)},4100);
+
+/* ------------ scene navigation + step progress ------------ */
+const stepNames={intro:'A LITTLE SURPRISE',q1:'THE LOVE TEST',win1:'ROSE REWARD',wrong1:'TRY AGAIN',q2:'BIRTHDAY QUIZ',win2:'ROSE REWARD',wrong2:'TRY AGAIN',roses:'PICK YOUR ROSE',heartgame:'THE LOVE METER',wheel:'LUCKY NUMBER',whatsapp:'SEND A LITTLE LOVE',letterbox:'A LETTER FOR YOU',finale:'ALWAYS YOU'};
+const progressByScene={intro:0,q1:12,win1:18,wrong1:12,q2:25,win2:32,wrong2:25,roses:42,heartgame:53,wheel:66,whatsapp:76,letterbox:88,finale:100};
+function showScene(id,burst=false){
+  const target=document.getElementById(id);if(!target)return;
+  document.querySelectorAll('.scene').forEach(s=>s.classList.remove('active'));
+  target.classList.add('active');document.body.dataset.scene=id;
+  document.getElementById('step-pill').textContent=stepNames[id]||'MADE WITH LOVE';
+  document.getElementById('progress-bar').style.width=(progressByScene[id]||0)+'%';
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(burst){makePetals(21);floatHearts(9);}
+  if(id==='wheel')drawWheel();
+  if(id==='finale')setTimeout(()=>loveBurst(28),300);
+}
+function answerFavorite(answer){if(answer==='sadika'){loveBurst(24);showScene('win1',true)}else showScene('wrong1',false)}
+function answerBirthday(year){if(year===2004){loveBurst(24);showScene('win2',true)}else showScene('wrong2',false)}
+
+/* ------------ rose selection mini game ------------ */
+const roseNotes=[
+  '🌹 The red rose is for the way you make my heart feel brave, warm, and wonderfully alive. You are loved more than this tiny page can explain.',
+  '🌷 The pink rose is for your softness, your smile, and all the little things about you that make an ordinary day feel special.',
+  '💐 This whole bouquet is for every version of you—happy, tired, quiet, excited, and everything in between. You deserve flowers just because you are you.'
+];
+let roseChosen=false;
+function chooseRose(index){
+  document.querySelectorAll('.rose-choice').forEach((b,i)=>{b.style.borderColor=i===index?'#ffe3a1':'#ffffff50';b.style.background=i===index?'#ffe3a124':'#ffffff13'});
+  document.getElementById('rose-reveal').textContent=roseNotes[index];document.getElementById('rose-next').disabled=false;roseChosen=true;makePetals(22);loveBurst(12);
+}
+
+/* ------------ tap 5 hearts game ------------ */
+let heartCount=0;
+const heartLines=['A little heartbeat for your beautiful smile. 💗','One rose for your kindness. 🌹','A heartbeat for all the little moments still waiting for us. ✨','A little extra love, just because you are you. 💞','Five heartbeats collected—my heart is cheering for you! ❤️'];
+function tapHeart(){
+  if(heartCount>=5)return;heartCount++;
+  document.getElementById('heart-meter-fill').style.width=(heartCount*20)+'%';
+  document.getElementById('heart-count').textContent=heartCount+' of 5 heartbeats collected';
+  document.getElementById('heart-message').textContent=heartLines[heartCount-1];
+  const button=document.getElementById('heart-tap');button.animate([{transform:'scale(1)'},{transform:'scale(1.18)'},{transform:'scale(1)'}],{duration:360,easing:'ease-out'});
+  makePetals(4);floatHearts(4);
+  if(heartCount===5){document.getElementById('heart-next').disabled=false;button.textContent='💖';loveBurst(18)}
+}
+
+/* ------------ custom canvas number wheel ------------ */
+const luckyNumbers=[8,10,12,1,4,6,16];let wheelSpinning=false;let selectedLuckyNumber=null;let currentWheelRotation=0;
+function drawWheel(){
+  const canvas=document.getElementById('wheel-canvas');if(!canvas)return;
+  const ctx=canvas.getContext('2d');const size=canvas.width,c=size/2,r=size/2-8;const arc=Math.PI*2/luckyNumbers.length;
+  const fills=['#ff9db9','#ffd78a','#a6d9eb','#c6a5ff','#ffb58f','#f3a6d6','#a9e7cb'];
+  ctx.clearRect(0,0,size,size);
+  luckyNumbers.forEach((num,i)=>{
+    const start=-Math.PI/2+i*arc,end=start+arc;
+    ctx.beginPath();ctx.moveTo(c,c);ctx.arc(c,c,r,start,end);ctx.closePath();ctx.fillStyle=fills[i];ctx.fill();
+    ctx.strokeStyle='#fff4df';ctx.lineWidth=6;ctx.stroke();
+    ctx.save();ctx.translate(c,c);ctx.rotate(start+arc/2);ctx.textAlign='right';ctx.textBaseline='middle';
+    ctx.shadowColor='#51255455';ctx.shadowBlur=5;ctx.fillStyle='#35183b';ctx.font='bold 54px Georgia,serif';ctx.fillText(String(num),r-42,0);ctx.restore();
+  });
+  ctx.beginPath();ctx.arc(c,c,31,0,Math.PI*2);ctx.fillStyle='#fff0c8';ctx.fill();ctx.strokeStyle='#9f4b74';ctx.lineWidth=5;ctx.stroke();
+}
+function spinWheel(){
+  if(wheelSpinning||selectedLuckyNumber!==null)return;wheelSpinning=true;
+  const button=document.getElementById('spin-button');button.disabled=true;button.textContent='Spinning... ✨';
+  const index=Math.floor(Math.random()*luckyNumbers.length);selectedLuckyNumber=luckyNumbers[index];
+  const arc=360/luckyNumbers.length;const finalAdd=360*6+(360-(index+.5)*arc);currentWheelRotation+=finalAdd;
+  const canvas=document.getElementById('wheel-canvas');canvas.style.transform='rotate('+currentWheelRotation+'deg)';
+  document.getElementById('wheel-hint').textContent='The wheel is choosing your number...';
+  setTimeout(()=>{
+    wheelSpinning=false;document.getElementById('wheel-result').innerHTML='<p style="margin:0;color:#f6eaff">Your lucky number is</p><div class="result-number">'+selectedLuckyNumber+'</div><p style="margin:0;color:#ffe6c0">Keep this little number close. 💫</p>';
+    document.getElementById('wheel-hint').textContent='Your next surprise is waiting below.';
+    button.textContent='Number chosen ✓';makePetals(25);loveBurst(20);
+    const next=document.createElement('button');next.className='btn';next.style.marginTop='14px';next.textContent='Continue to your WhatsApp surprise →';next.onclick=()=>{document.getElementById('lucky-number-display').textContent=selectedLuckyNumber;showScene('whatsapp',true)};
+    document.getElementById('wheel-result').appendChild(next);
+  },5350);
+}
+function sendWhatsApp(){
+  const n=selectedLuckyNumber===null?'my lucky number':selectedLuckyNumber;
+  const message='I love you, Abid ❤️ My lucky number is '+n+'. I am sending you a little love from my heart. And when we meet, remind me about that sweet kiss 😘';
+  window.open('https://wa.me/?text='+encodeURIComponent(message),'_blank','noopener,noreferrer');
+}
+
+/* ------------ animated 3D letterbox ------------ */
+let letterOpened=false;
+function openLetterBox(){
+  if(letterOpened)return;letterOpened=true;
+  document.getElementById('mailbox-stage').classList.add('opened');
+  document.getElementById('letter-instruction').textContent='Your letter is opening… 💌';makePetals(26);loveBurst(14);
+  setTimeout(()=>{
+    document.getElementById('letter-content').classList.add('visible');
+    document.getElementById('letter-instruction').textContent='A letter, written just for you.';
+    document.getElementById('finale-button').style.display='inline-flex';
+    setTimeout(()=>document.getElementById('letter-content').scrollIntoView({behavior:'smooth',block:'start'}),250);
+  },1000);
+}
+function finalLoveBurst(){loveBurst(75);makePetals(55);floatHearts(25)}
+function restartStory(){
+  heartCount=0;roseChosen=false;selectedLuckyNumber=null;wheelSpinning=false;currentWheelRotation=0;letterOpened=false;
+  document.getElementById('heart-meter-fill').style.width='0%';document.getElementById('heart-count').textContent='0 of 5 heartbeats collected';document.getElementById('heart-message').textContent='Tap gently, my love. 💗';document.getElementById('heart-next').disabled=true;document.getElementById('heart-tap').textContent='❤️';
+  document.getElementById('rose-reveal').textContent='';document.getElementById('rose-next').disabled=true;document.querySelectorAll('.rose-choice').forEach(b=>{b.style.borderColor='#ffffff50';b.style.background='#ffffff13'});
+  document.getElementById('wheel-canvas').style.transform='rotate(0deg)';document.getElementById('wheel-result').textContent='';document.getElementById('wheel-hint').textContent='Your number is waiting for you...';const spin=document.getElementById('spin-button');spin.disabled=false;spin.textContent='✦ Spin the wheel';
+  document.getElementById('mailbox-stage').classList.remove('opened');document.getElementById('letter-content').classList.remove('visible');document.getElementById('letter-instruction').textContent='Tap the box to open your letter ✨';document.getElementById('finale-button').style.display='none';
+  showScene('intro',true);
+}
+window.addEventListener('resize',()=>{if(document.getElementById('wheel').classList.contains('active')&&selectedLuckyNumber===null)drawWheel()});
+// Draw once so the wheel is ready when the visitor arrives.
+drawWheel();
+</script>
+</body>
+</html>
